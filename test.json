@@ -1,0 +1,208 @@
+{
+  "dns": {
+    "hosts": {
+      "lkfl2.nalog.ru": "213.24.64.175",
+      "lknpd.nalog.ru": "213.24.64.181"
+    },
+    "servers": [
+      "https://8.8.8.8/dns-query",
+      {
+        "address": "https://8.8.8.8/dns-query",
+        "domains": [
+          "geosite:github",
+          "geosite:twitch-ads",
+          "geosite:youtube",
+          "geosite:telegram"
+        ]
+      },
+      {
+        "address": "https://77.88.8.8/dns-query",
+        "domains": [
+          "geosite:private",
+          "geosite:category-ru",
+          "geosite:whitelist",
+          "geosite:microsoft",
+          "geosite:apple",
+          "geosite:google-play",
+          "geosite:epicgames",
+          "geosite:riot",
+          "geosite:escapefromtarkov",
+          "geosite:steam",
+          "geosite:origin",
+          "geosite:twitch",
+          "geosite:pinterest",
+          "geosite:faceit"
+        ]
+      }
+    ],
+    "queryStrategy": "UseIPv4"
+  },
+  "log": {
+    "loglevel": "warning"
+  },
+  "stats": {},
+  "policy": {
+    "levels": {
+      "8": {
+        "connIdle": 300,
+        "handshake": 4,
+        "uplinkOnly": 1,
+        "downlinkOnly": 1
+      }
+    },
+    "system": {
+      "statsOutboundUplink": true,
+      "statsOutboundDownlink": true
+    }
+  },
+  "routing": {
+    "rules": [
+      {
+        "port": 53,
+        "outboundTag": "dns-out"
+      },
+      {
+        "domain": [
+          "geosite:win-spy",
+          "geosite:torrent",
+          "geosite:category-ads"
+        ],
+        "outboundTag": "block"
+      },
+      {
+        "ip": [
+          "77.88.8.8"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": [
+          "8.8.8.8"
+        ],
+        "outboundTag": "proxy"
+      },
+      {
+        "domain": [
+          "geosite:github",
+          "geosite:twitch-ads",
+          "geosite:youtube",
+          "geosite:telegram"
+        ],
+        "outboundTag": "proxy"
+      },
+      {
+        "domain": [
+          "geosite:private",
+          "geosite:category-ru",
+          "geosite:whitelist",
+          "geosite:microsoft",
+          "geosite:apple",
+          "geosite:google-play",
+          "geosite:epicgames",
+          "geosite:riot",
+          "geosite:escapefromtarkov",
+          "geosite:steam",
+          "geosite:origin",
+          "geosite:twitch",
+          "geosite:pinterest",
+          "geosite:faceit"
+        ],
+        "outboundTag": "direct"
+      },
+      {
+        "ip": [
+          "geoip:private",
+          "geoip:direct"
+        ],
+        "outboundTag": "direct"
+      }
+    ],
+    "domainStrategy": "IPIfNonMatch"
+  },
+  "inbounds": [
+    {
+      "tag": "socks",
+      "port": 10808,
+      "listen": "127.0.0.1",
+      "protocol": "socks",
+      "settings": {
+        "udp": true,
+        "auth": "noauth",
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "quic",
+          "tls"
+        ]
+      }
+    },
+    {
+      "tag": "http",
+      "port": 10809,
+      "listen": "127.0.0.1",
+      "protocol": "http",
+      "settings": {
+        "userLevel": 8
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "quic",
+          "tls"
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "tag": "proxy",
+      "protocol": "vless",
+      "settings": {
+        "vnext": [
+          {
+            "address": "ger.gorhub.ru",
+            "port": 443,
+            "users": [
+              {
+                "id": "4e205817-2fd7-4c62-8183-b64f00ddda0b",
+                "encryption": "none",
+                "flow": "xtls-rprx-vision"
+              }
+            ]
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "tcpSettings": {},
+        "security": "reality",
+        "realitySettings": {
+          "serverName": "stackoverflow.com",
+          "publicKey": "4S6qXLdepEjgOeFBIbZmC-4ChOqGgM9l4vEedKw8rVk",
+          "shortId": "be0ce047",
+          "fingerprint": "firefox"
+        }
+      }
+    },
+    {
+      "tag": "direct",
+      "protocol": "freedom"
+    },
+    {
+      "tag": "block",
+      "protocol": "blackhole"
+    },
+    {
+      "tag": "dns-out",
+      "protocol": "dns",
+      "proxySettings": {
+        "tag": "proxy"
+      }
+    }
+  ],
+  "remarks": "🇩🇪 Германия"
+}
